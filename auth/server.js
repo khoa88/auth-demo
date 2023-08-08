@@ -15,14 +15,19 @@ app.use(express.json());
 // Parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const dbConfig = require("./app/config/db.config");
 const db = require("./app/models");
 
 db.mongoose
-  .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    `mongodb://mongodb:${process.env.MONGODB_DOCKER_PORT}/${process.env.MONGODB_DATABASE}`,
+    {
+      user: process.env.MONGODB_USER,
+      pass: process.env.MONGODB_PASSWORD,
+      authSource: "admin",
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
@@ -39,6 +44,7 @@ app.get("/", (req, res) => {
 
 // routes
 require("./app/routes/auth.routes")(app);
+require("./app/routes/system.routes")(app);
 
 // Set port, listen for requests
 const PORT = process.env.NODE_DOCKER_PORT || 8000;

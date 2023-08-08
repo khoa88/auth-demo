@@ -1,23 +1,35 @@
-version: "1.0"
+version: "3.8"
 
 services:
+  # Database - Mongo DB
   mongodb:
     container_name: mongodb
-    image: mongo:5.0.19
+    image: mongo
     restart: unless-stopped
     env_file: ./.env
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+      MONGO_INITDB_ROOT_USERNAME: $MONGODB_USER
+      MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
     ports:
-      - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
+      - "$MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT"
     volumes:
-      - db:/data/db
+      - ./db:/data/db
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   auth:
     container_name: auth
     depends_on:
       - mongodb
     build: ./auth
+    command: npm start
+    x-develop:
+      watch:
+        - action: sync
+          path: ./auth
+          target: /usr/src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./auth/package.json
     restart: unless-stopped
     env_file: ./.env
     ports:
