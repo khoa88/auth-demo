@@ -13,9 +13,9 @@ docker compose up --build
 
 The API can access through the URL [http://localhost:8000/api/auth/signin](http://localhost:8000/api/auth/signin)
 
-## Testing
+## Testing and development
 
-- Run the following command to build and run the docker containers for testing.
+- Run the following command to build and run the docker containers for testing and development.
 
 ```bash
 docker compose -f docker-compose.dev.yml up --build
