@@ -5,6 +5,11 @@ const User = mongoose.model(
   new mongoose.Schema({
     username: String,
     password: String,
+    block: Boolean,
+    attempts: {
+      type: Array,
+      default: [],
+    },
   })
 );
 

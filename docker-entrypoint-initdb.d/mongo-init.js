@@ -4,7 +4,7 @@ db.createCollection("users");
 
 db.users.insertOne({
   username: "testuser",
-  password: "testpassword",
-  lastAttempt: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
-  attempt: 0,
+  password: "$2a$08$67Bh9phEScbi9dY1osP1keLNR.K3VMHzVtWZnWYGsQ3srSq2isk0u",
+  block: false,
+  attempts: [],
 });
