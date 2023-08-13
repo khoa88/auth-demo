@@ -10,8 +10,6 @@ async function signIn(username, password) {
     username: username,
   });
 
-  console.log(user);
-
   if (!user) {
     return {
       success: false,
@@ -32,23 +30,15 @@ async function signIn(username, password) {
   if (!passwordIsValid) {
     const now = new Date();
 
-    console.log(user);
-    console.log("attempts");
-    console.log(user.attempts.length);
     if (user.attempts.length >= process.env.MAX_ATTEMPTS - 1) {
-      console.log(now.getTime() - new Date(user.attempts[0]).getTime());
-
       if (
         now.getTime() - new Date(user.attempts[0]).getTime() <=
         process.env.MAX_ATTEMPTS_TIME * 60 * 1000
       ) {
-        console.log("a1");
         user.block = true;
         await user.save();
       }
     }
-    console.log("a2");
-    console.log(user.attempts);
 
     user.attempts.push(now);
 
@@ -56,14 +46,11 @@ async function signIn(username, password) {
       user.attempts = user.attempts.slice(-process.env.MAX_ATTEMPTS + 1);
     }
 
-    console.log("a4");
     await user.save();
-
-    console.log("a3");
-    console.log(user.attempts);
 
     return {
       success: false,
+      attempts: user.attempts,
       message: "Invalid Password!",
     };
   }
